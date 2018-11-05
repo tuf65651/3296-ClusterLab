@@ -24,20 +24,21 @@ const char DEBUG = 0;
  * Call on text file.
  * Parameters:
  * path - string containing path to text file
- * nrows - pointer to variable for number of rows in matrix
- * ncols - pointer to variable for number of columns in matrix
+ * output:
+   nrows - pointer to variable for number of rows in matrix
+   ncols - pointer to variable for number of columns in matrix
 
  */
-double *parse_text_matrix(char *path, unsigned short *nrows, unsigned short *ncols) {
+double *parse_text_matrix(char *path, int *nrows, int *ncols) {
 	FILE *matrix_file = fopen(path, "r");
 	// String holds most recent line read.
 	char this_line[256];
 	// Variable holds dimension counts, to be placed in pointers later.
-	unsigned short count_rows = 0;
+	int count_rows = 0;
 
 	// Allocate space for entries retrieved.
 	double *matrix_space; // = (double*) malloc(sizeof(double) * 400);
-	unsigned short matrix_index = 0;
+	int matrix_index = 0;
 
 	// Get first line and find dimension
 	fgets(this_line,255,matrix_file);
