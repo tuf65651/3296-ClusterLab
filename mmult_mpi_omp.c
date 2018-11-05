@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
     exit(1);
   }
   // buffers for sending vector
-  double *a_vec = (double*) malloc(sizeof(double) * nIv1)
+  double *a_vec = (double*) malloc(sizeof(double) * nIv1);
   double* b_vec = (double*) malloc(sizeof(double) * nIv1); 
   cc1 = malloc(sizeof(double) * nrows * nrows);
 
