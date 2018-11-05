@@ -9,6 +9,7 @@
     mpi to distribute the computation among nodes and omp
     to distribute the computation among threads.
 */
+const char DEBUG = 1;
 
 int main(int argc, char* argv[])
 {
@@ -63,6 +64,11 @@ int main(int argc, char* argv[])
       /* Send row to all processes.
         Send whole vector, length of vector, indication that data is doubles,
         send from master process, send to all MPI processes. */
+
+	if(DEBUG){
+		printf("Main process reached Broadcast\n");
+	}
+	
       MPI_Bcast(b, ncols, MPI_DOUBLE, master, MPI_COMM_WORLD);
 
       // Iterate, as long as there's another process and another row for it.
