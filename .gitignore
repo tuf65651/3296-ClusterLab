@@ -1,4 +1,6 @@
 *.o
+*.out
+*.exe
 ~
 hello
 matrix_times_vector
