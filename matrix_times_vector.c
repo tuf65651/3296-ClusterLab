@@ -33,57 +33,61 @@ int main(int argc, char* argv[])
     if (myid == master) {
       // Master Code goes here
       for (i = 0; i < nrows; i++) {
-	for (j = 0; j < ncols; j++) {
-	  aa[i*ncols + j] = (double)rand()/RAND_MAX;
-	}
+        for (j = 0; j < ncols; j++) {
+	        aa[i*ncols + j] = (double)rand()/RAND_MAX;
+	      }
       }
       
       starttime = MPI_Wtime();
       numsent = 0;
       MPI_Bcast(b, ncols, MPI_DOUBLE, master, MPI_COMM_WORLD);
       for (i = 0; i < min(numprocs-1, nrows); i++) {
-	for (j = 0; j < ncols; j++) {
-	  buffer[j] = aa[i * ncols + j];
-	}  
-	MPI_Send(buffer, ncols, MPI_DOUBLE, i+1, i+1, MPI_COMM_WORLD);
-	numsent++;
+      	for (j = 0; j < ncols; j++) {
+      	  buffer[j] = aa[i * ncols + j];
+      	}  
+      	MPI_Send(buffer, ncols, MPI_DOUBLE, i+1, i+1, MPI_COMM_WORLD);
+      	numsent++;
       }
+
       for (i = 0; i < nrows; i++) {
-	MPI_Recv(&ans, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, 
-		 MPI_COMM_WORLD, &status);
-	sender = status.MPI_SOURCE;
-	anstype = status.MPI_TAG;
-	c[anstype-1] = ans;
-	if (numsent < nrows) {
-	  for (j = 0; j < ncols; j++) {
-	    buffer[j] = aa[numsent*ncols + j];
-	  }  
-	  MPI_Send(buffer, ncols, MPI_DOUBLE, sender, numsent+1, 
-		   MPI_COMM_WORLD);
-	  numsent++;
-	} else {
-	  MPI_Send(MPI_BOTTOM, 0, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD);
-	}
-      } 
+      	MPI_Recv(&ans, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, 
+      		 MPI_COMM_WORLD, &status);
+      	sender = status.MPI_SOURCE;
+      	anstype = status.MPI_TAG;
+      	c[anstype-1] = ans;
+      	if (numsent < nrows) {
+      	  for (j = 0; j < ncols; j++) {
+      	    buffer[j] = aa[numsent*ncols + j];
+      	  }  
+      	  MPI_Send(buffer, ncols, MPI_DOUBLE, sender, numsent+1, 
+      		   MPI_COMM_WORLD);
+      	  numsent++;
+      	} else {
+      	  MPI_Send(MPI_BOTTOM, 0, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD);
+      	}
+      }
+
       endtime = MPI_Wtime();
       printf("%f\n",(endtime - starttime));
+
     } else {
+
       // Slave Code goes here
       MPI_Bcast(b, ncols, MPI_DOUBLE, master, MPI_COMM_WORLD);
       if (myid <= nrows) {
-	while(1) {
-	  MPI_Recv(buffer, ncols, MPI_DOUBLE, master, MPI_ANY_TAG, 
-		   MPI_COMM_WORLD, &status);
-	  if (status.MPI_TAG == 0){
-	    break;
+      	while(1) {
+      	  MPI_Recv(buffer, ncols, MPI_DOUBLE, master, MPI_ANY_TAG, 
+      		   MPI_COMM_WORLD, &status);
+      	  if (status.MPI_TAG == 0){
+      	    break;
           }
-	  row = status.MPI_TAG;
-	  ans = 0.0;
-	  for (j = 0; j < ncols; j++) {
-	    ans += buffer[j] * b[j];
-	  }
-	  MPI_Send(&ans, 1, MPI_DOUBLE, master, row, MPI_COMM_WORLD);
-	}
+      	  row = status.MPI_TAG;
+      	  ans = 0.0;
+      	  for (j = 0; j < ncols; j++) {
+      	    ans += buffer[j] * b[j];
+      	  }
+      	  MPI_Send(&ans, 1, MPI_DOUBLE, master, row, MPI_COMM_WORLD);
+      	}
       }
     }
   } else {
