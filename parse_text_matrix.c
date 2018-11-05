@@ -41,8 +41,8 @@ double *parse_text_matrix(char *path, int *nrows, int *ncols) {
 	int matrix_index = 0;
 
 	// Get first line and find dimension
-	fgets(this_line,255,matrix_file);
-	count_rows++;
+	if(fgets(this_line,255,matrix_file))
+		count_rows++;
 	
 	/* Iterate through entries first in row */
 	char *cell_str = strtok(this_line," ");
