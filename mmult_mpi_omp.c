@@ -82,6 +82,9 @@ int main(int argc, char* argv[])
   if (argc > 1) {
     // nrows = atoi(argv[1]);
     // ncols = nrows;
+
+	MPI_Bcast(cc1, ncols, MPI_DOUBLE, master, MPI_COMM_WORLD);
+
     if (myid == 0) {
       // Master Code goes here
       // aa = gen_matrix(nrows, ncols);
