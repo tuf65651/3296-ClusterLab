@@ -101,6 +101,7 @@ int main(int argc, char* argv[])
            MPI_COMM_WORLD, &statusa);
         sender = statusa.MPI_SOURCE;
         cc1[statusa.MPI_TAG] = ans;
+	printf("Just put %lf in spot %i in cc1\n", ans, statusa.MPI_TAG);
 
         if (numsent < nrows) {
           // For every entry 
