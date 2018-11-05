@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char DEBUG = 1;
+const char DEBUG = 0;
 
 /**
  * Call on text file.
