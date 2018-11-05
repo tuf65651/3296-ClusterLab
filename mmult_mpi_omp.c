@@ -96,16 +96,29 @@ int main(int argc, char* argv[])
       
       // Iterate, as long as there's another process and another row for it.
       for (i = 0; i < min(numprocs-1, nrows); i++) {
-        // For every entry 
-        for (j = 0; j < nIv1; j++) {
-          a_vec[j] = aa[i * ncols + j];
-          b_vec[j] = bb[j * ncols + i];
-        }  // Row of aa is copied into buffer
-        // Send that buffer to all processes
-        MPI_Send(a_vec, nIv1, MPI_DOUBLE, i%numprocs, i+1, MPI_COMM_WORLD);
-        MPI_Send(b_vec, nIv1, MPI_DOUBLE, i%numprocs, i+1, MPI_COMM_WORLD);
-        numsent++;
+
+        MPI_Recv(&ans, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, 
+           MPI_COMM_WORLD, &status);
+        sender = status.MPI_SOURCE;
+        anstype = status.MPI_TAG;
+        cc1[anstype] = ans;
+
+        if (numsent < nrows) {
+          // For every entry 
+          for (j = 0; j < nIv1; j++) {
+            a_vec[j] = aa[i * ncols + j];
+            b_vec[j] = bb[j * ncols + i];
+          }  // Row of aa is copied into buffer
+          // Send that buffer to all processes
+          MPI_Send(a_vec, nIv1, MPI_DOUBLE, sender, i+1, MPI_COMM_WORLD);
+          MPI_Send(b_vec, nIv1, MPI_DOUBLE, sender, i+1, MPI_COMM_WORLD);
+          numsent++;
+        } else {
+          MPI_Send(MPI_BOTTOM, 0, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD);
+        }
       }
+      // signal end
+
 
       endtime = MPI_Wtime();
       printf("%f\n",(endtime - starttime));
@@ -139,7 +152,7 @@ int main(int argc, char* argv[])
             ans += a_vec[j] * b_vec[j];
           }
           // Report new sum to processes
-          MPI_Send(&ans, 1, MPI_DOUBLE, master, row * col, MPI_COMM_WORLD);
+          MPI_Send(&ans, 1, MPI_DOUBLE, master, row * ncols + col, MPI_COMM_WORLD);
         } //endwhile
       } // endif(myid <= nrows)
     }
