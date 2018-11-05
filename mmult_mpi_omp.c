@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
 
       numsent = 0;
       // Synchronize calls
-      MPI_Bcast(cc1, nIv1 * ncols, MPI_DOUBLE, master, MPI_COMM_WORLD);
+      //MPI_Bcast(cc1, nIv1 * ncols, MPI_DOUBLE, master, MPI_COMM_WORLD);
       
       // Iterate, as long as there's another process and another row for it.
       for (i = 0; i < min(numprocs-1, nrows); i++) {
@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
         }  // Row of aa is copied into buffer
         // Send that buffer to all processes
         MPI_Send(a_vec, nIv1, MPI_DOUBLE, i%numprocs, i+1, MPI_COMM_WORLD);
-        MPI_Send(b_vec, nIv1, MPI_DOUBLE, i%numprocs, i+1, MPI_COMM_WORLD)
+        MPI_Send(b_vec, nIv1, MPI_DOUBLE, i%numprocs, i+1, MPI_COMM_WORLD);
         numsent++;
       }
 
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
     } else {
 
 // Synchronize with buffer from master
-      MPI_Bcast(cc1, ncols, MPI_DOUBLE, master, MPI_COMM_WORLD);
+      //MPI_Bcast(cc1, ncols, MPI_DOUBLE, master, MPI_COMM_WORLD);
       if (myid <= nrows) { // Do nothing if matrix is already divvied up, else...
         while(1) { // Keep receiving and doing dot-products until getting status.MPI_TAG of 0
 
@@ -128,8 +128,8 @@ int main(int argc, char* argv[])
           if (statusa.MPI_TAG == 0 && statusb.MPI_TAG == 0){
             break;
           }
-          row = statusa.MPI_TAG;
-          col = statusb.MPI_TAG;
+          short row = statusa.MPI_TAG;
+          short col = statusb.MPI_TAG;
 
           ans = 0.0;
 #pragma omp parallel
