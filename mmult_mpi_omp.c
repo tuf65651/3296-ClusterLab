@@ -98,10 +98,9 @@ int main(int argc, char* argv[])
       for (i = 0; i < min(numprocs-1, nrows); i++) {
 
         MPI_Recv(&ans, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, 
-           MPI_COMM_WORLD, &status);
-        sender = status.MPI_SOURCE;
-        anstype = status.MPI_TAG;
-        cc1[anstype] = ans;
+           MPI_COMM_WORLD, &statusa);
+        sender = statusa.MPI_SOURCE;
+        cc1[statusa.MPI_TAG] = ans;
 
         if (numsent < nrows) {
           // For every entry 
