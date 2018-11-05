@@ -10,7 +10,7 @@
 
 double* gen_matrix(int n, int m);
 int mmult(double *c, double *a, int aRows, int aCols, double *b, int bRows, int bCols);
-void compare_matrix(double *a, double *b, int nRows, int nCols);
+void compare_matrices(double *a, double *b, int nRows, int nCols);
 
 /** 
     Program to multiply a matrix times a matrix using both
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
       printf("%f\n",(endtime - starttime));
       cc2  = malloc(sizeof(double) * nrows * nrows);
       mmult(cc2, aa, nrows, ncols, bb, ncols, nrows);
-      compare_matrix(cc2, cc1, nrows, nrows);
+      compare_matrices(cc2, cc1, nrows, nrows);
     } else {
       // Slave Code goes here
     }
